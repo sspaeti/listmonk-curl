@@ -83,18 +83,18 @@ const manifesto = `
       writing, and more — you get a digest of what's new.
 
    4. «Patterns of Data Engineering» — new chapters land here 
-	    first.
+      first.
 
    5. Books I finished. Things I'm thinking about. Philosophy, 
-	    productivity, deep life. Not just data.
+      productivity, deep life. Not just data.
 
    6. No tracking. No sponsors. Self-hosted on listmonk. Your 
-	    email stays yours.
+      email stays yours.
 
   ──────────────────────────────────────────────────────────
 
   Subscribe:   curl https://sub.ssp.sh/you@example.com
-																	  	->this is your email
+                                    -> add your email here above
   More:
   Newsletter:    newsletter.ssp.sh
   Website:       ssp.sh
