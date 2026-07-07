@@ -54,51 +54,52 @@ const usage = `
 
   Short form (no flags):
 
-    curl sub.ssp.sh/you@example.com
+    curl https://sub.ssp.sh/you@example.com
 
   Standard form:
 
     curl -d "email=you@example.com" https://sub.ssp.sh
 
-  Subscriber count:   curl sub.ssp.sh/count
-  Why self-hosted?    curl sub.ssp.sh/why
+  Subscriber count:   curl https://sub.ssp.sh/count
+  Why self-hosted?    curl https://sub.ssp.sh/why
   Prefer a browser?   %s
 
 `
 
 const manifesto = `
   ╔══════════════════════════════════════════════════════════╗
-  ║            Why self-host your newsletter?                ║
+  ║            ssp.sh newsletter — why subscribe?            ║
   ╚══════════════════════════════════════════════════════════╝
 
-   1. Your list belongs to you.
-      Not Mailchimp. Not Substack. Not Beehiiv.
-      Export it at midnight on a Sunday.
-      Switch tools without asking permission.
+  Simon Späti. Data engineer, author, freelance technical writer.
+  20+ years in data. Learning in public since 2015.
 
-   2. You know exactly what happens to their data.
-      No tracking pixels you didn't install.
-      No selling segments to advertisers.
-      Just you, your readers, and an SMTP server.
+   1. No schedule, I write when I have something worth saying.
 
-   3. The economics are embarrassing.
-      listmonk is free and open source.
-      Railway hobby plan: a few dollars a month.
-      Substack's 10% cut on $1k MRR: $100/month.
+   2. Notes and posts from 20+ years of building data pipelines,
+      writing about open-source, and working with data teams.
 
-   4. The gimmick is the message.
-      "My newsletter is subscribable via curl"
-      is a post that writes itself on HN and Bluesky.
-      It filters for exactly your audience.
+   3. 1000+ public notes on data engineering, Obsidian, Neovim,
+      writing, and more — you get a digest of what's new.
 
-   5. If it breaks, you fix it.
-      That's the deal. That's also the fun.
+   4. «Patterns of Data Engineering» — new chapters land here 
+	    first.
+
+   5. Books I finished. Things I'm thinking about. Philosophy, 
+	    productivity, deep life. Not just data.
+
+   6. No tracking. No sponsors. Self-hosted on listmonk. Your 
+	    email stays yours.
 
   ──────────────────────────────────────────────────────────
 
-  Subscribe:   curl sub.ssp.sh/you@example.com
-  Read more:   https://ssp.sh/brain
-  The book:    https://ssp.sh/book
+  Subscribe:   curl https://sub.ssp.sh/you@example.com
+																	  	->this is your email
+  More:
+  Newsletter:    newsletter.ssp.sh
+  Website:       ssp.sh
+  Second Brain:  ssp.sh/brain
+  Book:          ssp.sh/book
 
   ──────────────────────────────────────────────────────────
 
@@ -149,10 +150,9 @@ func subscribe(w http.ResponseWriter, email, name string) {
 	}
 
 	plain(w, http.StatusOK,
-		"Almost there — check your inbox to confirm.\n\n"+
-			"(Double opt-in. No spam, ever.)\n\n"+
-			"Why self-hosted? curl sub.ssp.sh/why\n"+
-			"While you wait: https://ssp.sh/brain\n")
+		"Almost there -> CHECK YOUR INBOX TO CONFIRM.\n\n"+
+		"------\n\n"+
+			"Why subscribe? curl https://sub.ssp.sh/why\n")
 }
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {

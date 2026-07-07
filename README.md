@@ -4,7 +4,7 @@ Curl-friendly newsletter signup shim in front of [listmonk](https://listmonk.app
 
 ```sh
 # Short form — no flags, email in path
-curl sub.ssp.sh/you@example.com
+curl https://sub.ssp.sh/you@example.com
 
 # Standard POST
 curl -d "email=you@example.com" https://sub.ssp.sh
