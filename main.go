@@ -95,11 +95,8 @@ const manifesto = `
 
   Subscribe:   'curl https://sub.ssp.sh/you@example.com'
                                      -> add your email above
-  More:
-  Newsletter:    newsletter.ssp.sh
+  More:          newsletter.ssp.sh
   Website:       ssp.sh
-  Second Brain:  ssp.sh/brain
-  Book:          ssp.sh/book
 
   ──────────────────────────────────────────────────────────
 
