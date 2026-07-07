@@ -98,7 +98,7 @@ const usage = `
 
 const manifesto = `
   ╔══════════════════════════════════════════════════════════╗
-  ║            ssp.sh newsletter — why subscribe?            ║
+	║            ssp.sh newsletter: why subscribe?             ║
   ╚══════════════════════════════════════════════════════════╝
 
   Simon Späti. Data engineer, author, freelance technical writer.
@@ -110,7 +110,7 @@ const manifesto = `
       writing about open-source, and working with data teams.
 
    3. 1000+ public notes on data engineering, Obsidian, Neovim,
-      writing, and more — you get a digest of what's new.
+      writing, and more. You get a digest of what's new.
 
    4. «Patterns of Data Engineering» — new chapters land here 
       first.
