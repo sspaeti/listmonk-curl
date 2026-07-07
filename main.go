@@ -32,10 +32,12 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net"
 	"net/http"
 	"net/mail"
 	"os"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -47,6 +49,34 @@ var (
 	formURL     = envOr("SUB_FORM_URL", "https://list.ssp.sh/subscription/form")
 	httpClient  = &http.Client{Timeout: 10 * time.Second}
 )
+
+// Simple per-IP rate limiter: max 5 subscribe attempts per hour.
+var limiter = struct {
+	sync.Mutex
+	hits map[string][]time.Time
+}{hits: make(map[string][]time.Time)}
+
+func rateLimit(r *http.Request) bool {
+	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+	if fwd := r.Header.Get("X-Forwarded-For"); fwd != "" {
+		ip = strings.SplitN(fwd, ",", 2)[0]
+	}
+	now := time.Now()
+	window := now.Add(-1 * time.Hour)
+
+	limiter.Lock()
+	defer limiter.Unlock()
+
+	// Drop hits older than 1 hour.
+	recent := limiter.hits[ip][:0]
+	for _, t := range limiter.hits[ip] {
+		if t.After(window) {
+			recent = append(recent, t)
+		}
+	}
+	limiter.hits[ip] = append(recent, now)
+	return len(limiter.hits[ip]) > 5
+}
 
 const usage = `
   ssp.sh newsletter — data engineering, second brain, learning in public
@@ -120,7 +150,11 @@ func plain(w http.ResponseWriter, code int, msg string) {
 	fmt.Fprintln(w, msg)
 }
 
-func subscribe(w http.ResponseWriter, email, name string) {
+func subscribe(w http.ResponseWriter, r *http.Request, email, name string) {
+	if rateLimit(r) {
+		plain(w, http.StatusTooManyRequests, "Slow down. Max 5 attempts per hour per IP.")
+		return
+	}
 	if _, err := mail.ParseAddress(email); err != nil {
 		plain(w, http.StatusBadRequest,
 			"That doesn't look like an email address.\n\nTry:\n  curl sub.ssp.sh/you@example.com")
@@ -157,7 +191,7 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 
 	// Short form: GET /you@example.com
 	if r.Method == http.MethodGet && strings.Contains(path, "@") {
-		subscribe(w, path, "")
+		subscribe(w, r, path, "")
 		return
 	}
 
@@ -177,7 +211,7 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 		}
 		email := strings.TrimSpace(r.PostFormValue("email"))
 		name := strings.TrimSpace(r.PostFormValue("name"))
-		subscribe(w, email, name)
+		subscribe(w, r, email, name)
 
 	default:
 		plain(w, http.StatusMethodNotAllowed, "Only GET and POST.")
