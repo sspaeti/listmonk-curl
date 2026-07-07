@@ -40,13 +40,12 @@ import (
 )
 
 var (
-	listUUID   = os.Getenv("SUB_LIST_UUID")
-	listID     = os.Getenv("SUB_LIST_ID")
-	apiUser    = os.Getenv("SUB_API_USER")
-	apiToken   = os.Getenv("SUB_API_TOKEN")
+	listUUID    = os.Getenv("SUB_LIST_UUID")
+	apiUser     = os.Getenv("SUB_API_USER")
+	apiToken    = os.Getenv("SUB_API_TOKEN")
 	listmonkURL = envOr("SUB_LISTMONK_URL", "https://list.ssp.sh")
-	formURL    = envOr("SUB_FORM_URL", "https://list.ssp.sh/subscription/form")
-	httpClient = &http.Client{Timeout: 10 * time.Second}
+	formURL     = envOr("SUB_FORM_URL", "https://list.ssp.sh/subscription/form")
+	httpClient  = &http.Client{Timeout: 10 * time.Second}
 )
 
 const usage = `
@@ -192,14 +191,14 @@ func handleCount(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Cache-Control", "public, max-age=300")
 
-	if listID == "" || apiUser == "" || apiToken == "" {
+	if apiUser == "" || apiToken == "" {
 		plain(w, http.StatusServiceUnavailable, "count not configured")
 		return
 	}
 
-	req, _ := http.NewRequest("GET",
-		listmonkURL+"/api/subscribers?list_id="+listID+"&subscription_status=confirmed&per_page=1",
-		nil)
+	// No list_id filter → matches the "All subscribers" total in listmonk admin,
+	// deduped across all lists (newsletter + book).
+	req, _ := http.NewRequest("GET", listmonkURL+"/api/subscribers?per_page=1", nil)
 	req.SetBasicAuth(apiUser, apiToken)
 
 	resp, err := httpClient.Do(req)

@@ -26,7 +26,6 @@ Browser `GET /` redirects to the listmonk subscription form.
    | Variable | Required | Description |
    |---|---|---|
    | `SUB_LIST_UUID` | yes | List UUID — listmonk admin → Lists |
-   | `SUB_LIST_ID` | for `/count` | Integer list ID (visible in the admin URL) |
    | `SUB_API_USER` | for `/count` | listmonk API username |
    | `SUB_API_TOKEN` | for `/count` | listmonk API token |
    | `SUB_LISTMONK_URL` | no | listmonk base URL (default `https://list.ssp.sh`) |
