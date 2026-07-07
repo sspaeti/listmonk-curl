@@ -183,7 +183,7 @@ func subscribe(w http.ResponseWriter, r *http.Request, email, name string) {
 	plain(w, http.StatusOK,
 		"Last step -> CONFIRM the email in your inbox from me (simon@ssp.sh).\n\n"+
 		"------\n\n"+
-			"Why subscribe? curl https://sub.ssp.sh/why\n")
+			"More info why to subscribe? `curl https://sub.ssp.sh/why`\n")
 }
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {
