@@ -35,6 +35,7 @@ import (
 	"net"
 	"net/http"
 	"net/mail"
+	"net/url"
 	"os"
 	"strings"
 	"sync"
@@ -228,9 +229,15 @@ func handleCount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// No list_id filter → matches the "All subscribers" total in listmonk admin,
-	// deduped across all lists (newsletter + book).
-	req, _ := http.NewRequest("GET", listmonkURL+"/api/subscribers?per_page=1", nil)
+	// Enabled subscribers with a confirmed subscription on at least one list:
+	// blocklisted, unsubscribed and unconfirmed opt-ins are excluded. No list_id
+	// filter, so someone on both lists (newsletter + book) counts once.
+	// `query` is a raw SQL WHERE fragment that listmonk appends to its query;
+	// `subscription_status` alone is ignored without a list_id, hence the subquery.
+	q := url.Values{}
+	q.Set("per_page", "1")
+	q.Set("query", "subscribers.status='enabled' AND subscribers.id IN (SELECT subscriber_id FROM subscriber_lists WHERE status='confirmed')")
+	req, _ := http.NewRequest("GET", listmonkURL+"/api/subscribers?"+q.Encode(), nil)
 	req.SetBasicAuth(apiUser, apiToken)
 
 	resp, err := httpClient.Do(req)

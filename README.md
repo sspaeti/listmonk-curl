@@ -46,5 +46,5 @@ The shim is intentionally isolated from the main listmonk deployment. If the shi
 | `GET` | `/<email>` | Subscribe (short form, email in path) |
 | `POST` | `/` | Subscribe (`email` + optional `name` form fields) |
 | `GET` | `/` | Usage text (curl) or redirect to form (browser) |
-| `GET` | `/count` | Confirmed subscriber count, CORS-open |
+| `GET` | `/count` | Subscriber count (enabled + confirmed on at least one list; blocklisted, unsubscribed and pending opt-ins excluded), CORS-open |
 | `GET` | `/why` | ASCII self-hosting manifesto |
